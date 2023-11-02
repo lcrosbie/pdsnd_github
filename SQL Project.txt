@@ -1,0 +1,69 @@
+/* Query 1 - query used for first insight */
+SELECT iq.film_title,		
+       iq.category_name,	
+       iq.rental_count		
+       FROM (SELECT f.title as film_title, 		
+        	    c.name as category_name,		
+        	    COUNT(r.rental_id) as rental_count		
+		    FROM film f
+		    JOIN film_category fc
+		    ON f.film_id = fc.film_id
+		    JOIN category c
+		    ON c.category_id = fc.category_id
+		    JOIN inventory i
+		    ON i.film_id = f.film_id
+		    JOIN rental r
+		    ON r.inventory_id = i.inventory_id
+		   GROUP BY 1,2) iq
+ 	WHERE category_name IN ('Animation', 'Children', 'Classics', 'Comedy', 'Family', 'Music')		
+        GROUP BY 1,2,3		
+        ORDER BY 2,1,3;		
+
+/* Query 2 - query used for second insight */
+SELECT iq.film_title,
+       iq.category_name,
+       iq.rental_duration,
+       iq.percentile
+       FROM (SELECT  f.title as film_title,
+                     c.name as category_name,
+                     f.rental_duration as rental_duration,
+                     NTILE(4) OVER (ORDER BY f.rental_duration) as percentile
+		     FROM film f
+		     JOIN film_category fc
+	             ON f.film_id = fc.film_id
+		     JOIN category c
+		     ON c.category_id = fc.category_id) iq
+       WHERE category_name IN ('Animation', 'Children', 'Classics', 'Comedy', 'Family', 'Music');
+
+/* Query 3 - query used for third insight */
+
+SELECT iq2.category_name,	
+       iq2.percentile as standard_quartile,
+       COUNT(iq2.*)	
+       FROM(SELECT iq.film_title,	
+       		   iq.category_name,	
+        	   iq.rental_duration,	
+     	           iq.percentile	
+		   FROM (SELECT  f.title as film_title,	
+	      		         c.name as category_name,
+	                         f.rental_duration as rental_duration,
+                                 NTILE(4) OVER (ORDER BY f.rental_duration) as percentile	
+				 FROM film f
+				 JOIN film_category fc
+				 ON f.film_id = fc.film_id
+				 JOIN category c
+				 ON c.category_id = fc.category_id) iq
+                  WHERE category_name IN ('Animation', 'Children', 'Classics', 'Comedy', 'Family', 'Music'))iq2	
+      GROUP BY 1,2	
+      ORDER BY 1,2;
+
+/* Query 4 - query used for fourth insight */
+SELECT DATE_PART('month',r.rental_date) as rental_month,	
+       DATE_PART('year',r.rental_date) as rental_year,
+       i.store_id,	
+       COUNT(*)	
+       FROM rental r	
+       JOIN inventory i	
+       ON r.inventory_id = i.inventory_id	
+       GROUP BY 1,2,3
+       ORDER BY 4 DESC;	
