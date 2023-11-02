@@ -7,7 +7,7 @@
 Bikeshare Python Project
 
 ### Description
-Describe what your project is about and what it does
+The Bikeshare project provides statistical analysis on bike sharing in new york city, chicago and washington individually, looking at the data per month or for all months and by day of the week or all days fo the week. The user has the ability to easily view the data in many formats.
 
 ### Files used
 Include the files used
