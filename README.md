@@ -13,5 +13,5 @@ The Bikeshare project provides statistical analysis on bike sharing in new york 
 The files used were chicago csv, washington csv and new york city csv.
 
 ### Credits
-It's important to give proper credit. Add links to any repo that inspired you or blogposts you consulted.
+To myself
 
